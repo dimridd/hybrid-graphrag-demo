@@ -1,0 +1,99 @@
+# Golden evaluation set. A chunk is relevant if it contains an evidence quote
+# (case, markdown and whitespace ignored). qtype: fact | process | multi-hop | aggregation
+questions:
+  - id: q01
+    question: Which database does the Deal Filter Runner search to find matching deals?
+    evidence: ["vector similarity search against the Astra DB CRM collection"]
+    qtype: fact
+  - id: q02
+    question: What are the steps of Phase I in the Deal Filter Pipeline?
+    evidence: ["Step I-1 — Intent Classification", "Step I-2 — Query Decomposition", "Step I-3 — Runner Fan-out"]
+    qtype: process
+  - id: q03
+    question: In what order do SSE events arrive from the deals streaming endpoint?
+    evidence: ["Events arrive in this order"]
+    qtype: process
+  - id: q04
+    question: How often does orbit-gateway send heartbeats on an SSE stream?
+    evidence: ["heartbeat comment every 15 seconds"]
+    qtype: fact
+  - id: q05
+    question: What happens in the MapReduce overflow path when a context is too large?
+    evidence: ["the context is split into windows"]
+    qtype: process
+  - id: q06
+    question: How does Orbit stop the model from citing chunks that were never retrieved?
+    evidence: ["checks every cited tag against the ground-truth tag map"]
+    qtype: fact
+  - id: q07
+    question: Why are provider deltas re-split into words before streaming?
+    evidence: ["Provider deltas are not word aligned"]
+    qtype: fact
+  - id: q08
+    question: How many turns of conversation does the Query Rewriter use?
+    evidence: ["using the last 4 turns of the conversation"]
+    qtype: fact
+  - id: q09
+    question: Where does the Chat Service store conversations and what collections does it use?
+    evidence: ["stores data in MongoDB", "one document per chat"]
+    qtype: fact
+  - id: q10
+    question: What made Chat API v2 create calls idempotent?
+    evidence: ["identified by the pair (`sender`, `deal_id`)"]
+    qtype: fact
+  - id: q11
+    question: What was the root cause of incident ORB-2291?
+    evidence: ["several logins raced and one corrupted the SDK's shared cache"]
+    qtype: fact
+  - id: q12
+    question: Who leads the team that owns the component fixed in incident ORB-2291?
+    evidence: ["The Orbit Core team added a per-tenant lock", "Lead: Meera Kapoor"]
+    qtype: multi-hop
+  - id: q13
+    question: Which team owns the service that sends SSE heartbeats, and who leads it?
+    evidence: ["Served by the orbit-gateway service", "Lead: Tomás Ortega"]
+    qtype: multi-hop
+  - id: q14
+    question: What should I check when SSE answers arrive all at once instead of streaming?
+    evidence: ["response buffering must be off for `/sse/*` routes"]
+    qtype: process
+  - id: q15
+    question: How often are JWT signing keys rotated and which service issues the tokens?
+    evidence: ["Signing keys rotate every hour", "The Auth Service issues a JWT"]
+    qtype: fact
+  - id: q16
+    question: When is a knowledge graph fact shown to a user in enterprise search?
+    evidence: ["only if the user can open at least one of the chunks it was extracted from"]
+    qtype: fact
+  - id: q17
+    question: How much did time to first token improve from Orbit 2 to Orbit 3 and why?
+    evidence: ["Median time to first token fell from 6.8 s in Orbit 2 to 2.9 s"]
+    qtype: fact
+  - id: q18
+    question: What release gate is used for the golden set?
+    evidence: ["do not drop by more than 0.02"]
+    qtype: fact
+  - id: q19
+    question: Which model produces embeddings for the Astra DB collections, and which team owns that service?
+    evidence: ["mxbai-embed-large model", "Owns: orbit-gateway, Chat Service, Connector Sync, Embedding Service"]
+    qtype: multi-hop
+  - id: q20
+    question: Who was the incident commander for ORB-2291 and which rotation does that person belong to?
+    evidence: ["Incident commander: Priya Shah", "Engineers: Priya Shah"]
+    qtype: multi-hop
+  - id: q21
+    question: Which roadmap item fixes the follow-up consistency issue found in the context retention evaluation?
+    evidence: ["Fix tracked as ORB-2381", "fixes the turn-consistency issue (ORB-2381)"]
+    qtype: multi-hop
+  - id: q22
+    question: Which Jira tickets are linked to the SSE streaming pipeline and gateway?
+    evidence: ["duplicate-login race tracked in ORB-2291", "Buffering was the cause of ORB-2310"]
+    qtype: aggregation
+  - id: q23
+    question: What does the Orbit Core team own?
+    evidence: ["Owns: Deal Planner, Deal Filter Runner, Context Builder"]
+    qtype: aggregation
+  - id: q24
+    question: How long are chat messages and query audit logs retained?
+    evidence: ["Chat messages are kept for 365 days", "Query audit logs are kept for 400 days"]
+    qtype: fact

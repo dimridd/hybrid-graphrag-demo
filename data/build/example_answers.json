@@ -1,0 +1,22 @@
+{
+ "Which team owns the service that sends SSE heartbeats, and who leads it?": {
+  "answer": "The Platform team owns the orbit-gateway service that sends SSE heartbeats, led by Tomás Ortega [C2][C3].",
+  "model": "Kimi K2.5"
+ },
+ "Who was the incident commander for ORB-2291 and which rotation does that person belong to?": {
+  "answer": "Priya Shah was the incident commander for ORB-2291 [C5]. She belongs to the SRE team, which has a weekly primary rotation led by Daniel Okafor [C1][C4].",
+  "model": "Kimi K2.5"
+ },
+ "Which model produces embeddings for the Astra DB collections, and which team owns that service?": {
+  "answer": "The mxbai-embed-large model produces embeddings [C1], owned by the Platform team (Embedding Service) led by Tomás Ortega [C4].",
+  "model": "Kimi K2.5"
+ },
+ "What are the steps of Phase I in the Deal Filter Pipeline?": {
+  "answer": "Phase I steps in the Deal Filter Pipeline are: 1) Intent Classification (`_classify_intent`), 2) Query Decomposition (`_decompose_query`), and 3) Runner Fan-out (`_run_sub_queries`) [C4][C6].",
+  "model": "Kimi K2.5"
+ },
+ "What was the root cause of incident ORB-2291?": {
+  "answer": "Concurrent sub-queries from the runner fan-out reached the Deal Filter Runner simultaneously, causing multiple CRM logins to race and corrupt the SDK's shared cache [C2].",
+  "model": "Kimi K2.5"
+ }
+}

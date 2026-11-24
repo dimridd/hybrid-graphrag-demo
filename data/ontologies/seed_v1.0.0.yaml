@@ -1,0 +1,31 @@
+# Hand-written seed ontology (v1.0.0). Deliberately small: the training loop must discover what the
+# corpus needs (incidents, pipeline stages, events, ...) and which names are junk.
+metadata: {name: Enterprise Search Ontology (Confluence connector), version: 1.0.0}
+changelog: ["1.0.0 seed: hand-written core types"]
+entity_types:
+  # ---- structural layer (connector metadata / regex, no LLM) ----
+  - {name: Space, description: A Confluence space, strategy: metadata}
+  - {name: Document, description: A Confluence page, strategy: metadata, aliases: [Page]}
+  - {name: Label, description: A Confluence label, strategy: metadata}
+  - {name: JiraIssue, description: A Jira ticket referenced by key (e.g. ORB-2291), strategy: regex, aliases: [Ticket, Issue]}
+  # ---- shared core layer ----
+  - {name: Person, description: A named employee or contact, strategy: llm, aliases: [Engineer, Employee, Author, Owner]}
+  - {name: Team, description: An engineering or business team, strategy: llm, aliases: [Group, Squad]}
+  - {name: Service, description: A deployable software service or API, strategy: llm, aliases: [Microservice, System, Application]}
+  - {name: Component, description: A module, class or internal part of a service, strategy: llm, aliases: [Module, Class, Function]}
+  - {name: DataStore, description: A database, index, bucket or collection, strategy: llm, aliases: [Database, Collection, Index, Bucket]}
+  - {name: APIEndpoint, description: An HTTP endpoint such as POST /api/chats/list, strategy: llm, aliases: [Endpoint, API]}
+  - {name: LLMModel, description: A machine learning or language model, strategy: llm, aliases: [Model]}
+  - {name: Metric, description: A measured quantity used for evaluation or monitoring, strategy: llm}
+relationships:
+  - {verb: MEMBER_OF, source: [Person], target: [Team], description: person belongs to team}
+  - {verb: LEADS, source: [Person], target: [Team], description: person leads team}
+  - {verb: OWNS, source: [Team], target: [Service, Component, DataStore], description: team is responsible for it}
+  - {verb: PART_OF, source: [Component], target: [Service, Component], description: component is part of a larger unit}
+  - {verb: CALLS, source: [Service, Component], target: [Service, Component], description: runtime call or dependency}
+  - {verb: EXPOSES, source: [Service], target: [APIEndpoint], description: service serves the endpoint}
+  - {verb: STORES_IN, source: [Service, Component], target: [DataStore], description: reads or writes data in the store}
+  - {verb: USES_MODEL, source: [Service, Component], target: [LLMModel], description: calls the model}
+  - {verb: MEASURES, source: [Metric], target: [Service, Component, LLMModel], description: metric evaluates it}
+# shape_exempt: types whose real names ARE identifiers (crm_deals, context_recall, POST /api/..., ORB-2291)
+name_rules: {code_shapes: [], id_shapes: [], stop_list: [], shape_exempt: [JiraIssue, APIEndpoint, DataStore, Metric]}
