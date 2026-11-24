@@ -6,6 +6,7 @@
 """
 from __future__ import annotations
 
+import os
 import re
 
 from .config import ANSWER_MODEL
@@ -21,10 +22,22 @@ def build_prompt(question: str, contexts: list[tuple[str, str]]) -> str:
     return f"CONTEXT:\n{blocks}\n\nQUESTION: {question}"
 
 
-def stream_llm_answer(question: str, contexts, api_key: str):
+def answer_backend(sidebar_key: str = ""):
+    """Pick the answer LLM: key typed in the sidebar > OPENAI_API_KEY > LLM_BASE_URL + LLM_API_KEY (from .env)."""
+    if sidebar_key:
+        return {"api_key": sidebar_key, "base_url": None, "model": ANSWER_MODEL, "label": f"{ANSWER_MODEL} (your key)"}
+    if os.environ.get("OPENAI_API_KEY"):
+        return {"api_key": os.environ["OPENAI_API_KEY"], "base_url": None, "model": ANSWER_MODEL, "label": f"{ANSWER_MODEL} (.env)"}
+    if os.environ.get("LLM_BASE_URL") and os.environ.get("LLM_API_KEY"):
+        model = os.environ.get("ANSWER_MODEL", "moonshotai.kimi-k2.5")
+        return {"api_key": os.environ["LLM_API_KEY"], "base_url": os.environ["LLM_BASE_URL"], "model": model, "label": f"{model} (.env)"}
+    return None
+
+
+def stream_llm_answer(question: str, contexts, backend: dict):
     from openai import OpenAI
-    client = OpenAI(api_key=api_key)
-    stream = client.chat.completions.create(model=ANSWER_MODEL, temperature=0, stream=True,
+    client = OpenAI(api_key=backend["api_key"], base_url=backend["base_url"]) if backend["base_url"] else OpenAI(api_key=backend["api_key"])
+    stream = client.chat.completions.create(model=backend["model"], temperature=0, stream=True,
                                             messages=[{"role": "system", "content": SYSTEM},
                                                       {"role": "user", "content": build_prompt(question, contexts)}])
     for ev in stream:

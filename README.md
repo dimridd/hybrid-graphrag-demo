@@ -5,8 +5,6 @@ A working, single-connector demo of an enterprise search engine that combines **
 and the three ranked lists are fused with **Reciprocal Rank Fusion**. The ontology itself is **trained**: proposed
 from four evidence streams, ablated per change group, and released only through a multi-metric gate.
 
-**Live demo:** _add your Streamlit Cloud URL here_  ·  runs without any API key
-
 > This is the open demo version of a production design (ChunkMind + Odyn). Production uses Kafka, FalkorDB,
 > AstraDB and several connectors. This demo uses one connector (Confluence-style pages) with NetworkX,
 > ChromaDB and a batch build, so it runs anywhere for free. The corpus is **21 fictional pages** about a
@@ -95,12 +93,13 @@ Recall@5 by question type:
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env        # optional: add a key for live generated answers
 streamlit run app.py
 ```
 
 The first start downloads the 80 MB MiniLM ONNX model used by ChromaDB. No API key is needed: the graph,
 ontology versions, evaluation and five starter answers are precomputed in `data/build/`. Paste an OpenAI key in
-the sidebar to get live generated answers for any question.
+the sidebar, or set one in `.env` (see `.env.example`), to get live generated answers for any question.
 
 **Deploy free:** push to GitHub → [share.streamlit.io](https://share.streamlit.io) → *New app* → pick the repo, `app.py`.
 

@@ -14,7 +14,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from hybridrag.answer import extractive_answer, stream_llm_answer
+from hybridrag.answer import answer_backend, extractive_answer, stream_llm_answer
 from hybridrag.config import BUILD, DEFAULT_K, EXAMPLES, ONTOLOGY_DIR, ROOT, USERS, allowed_spaces
 from hybridrag.evaluate import load_golden
 from hybridrag.extract import validate
@@ -130,6 +130,8 @@ with st.sidebar:
     st.markdown("### 🤖 Answer model")
     api_key = st.text_input("OpenAI API key (optional)", type="password",
                             help="Used only in your session for gpt-4o-mini answers. Without it you get an extractive, cited answer.")
+    backend = answer_backend(api_key)
+    st.caption(f"Live answers: **{backend['label']}**" if backend else "Live answers: off (cached / extractive answers)")
     st.divider()
     st.caption("Demo build of the ChunkMind architecture on one connector (Confluence-style pages). "
                "NetworkX stands in for FalkorDB, ChromaDB for AstraDB, a batch build for Kafka.")
@@ -171,12 +173,15 @@ with tab_ask:
         box = st.container(border=True)
         if not contexts:
             box.warning("NOT FOUND in the documents you can access.")
-        elif api_key:
+        elif backend:
             try:
-                box.write_stream(stream_llm_answer(q, contexts, api_key))
+                box.write_stream(stream_llm_answer(q, contexts, backend))
+                box.caption(f"Generated live by {backend['label']} from the context below.")
             except Exception as e:  # noqa: BLE001
-                box.error(f"OpenAI call failed ({type(e).__name__}); showing the extractive answer instead.")
-                box.markdown(extractive_answer(q, contexts, res.facts))
+                cached = S["examples"].get(q)
+                box.markdown(cached["answer"] if cached else extractive_answer(q, contexts, res.facts))
+                box.caption(f"Live LLM unavailable ({type(e).__name__}: check the key in .env or the sidebar) — "
+                            + ("showing the answer cached at build time." if cached else "showing the extractive answer."))
         elif (q in S["examples"] and mode == "hybrid" and len(spaces) == 6 and k == DEFAULT_K
               and damping == 0.5 and specificity):
             box.markdown(S["examples"][q]["answer"])
