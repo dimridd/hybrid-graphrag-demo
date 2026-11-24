@@ -103,6 +103,21 @@ the sidebar, or set one in `.env` (see `.env.example`), to get live generated an
 
 **Deploy free:** push to GitHub → [share.streamlit.io](https://share.streamlit.io) → *New app* → pick the repo, `app.py`.
 
+### With or without an API key
+
+Search never needs a key: BM25, ChromaDB, entity linking, Personalized PageRank, RRF and permission filtering run
+locally on every question, and the graph, trained ontology and evaluation are precomputed in `data/build/`.
+Only the answer wording can use an LLM, chosen in this order:
+
+1. a key typed in the sidebar → gpt-4o-mini, streamed with citations
+2. `OPENAI_API_KEY` in `.env` → gpt-4o-mini
+3. `LLM_BASE_URL` + `LLM_API_KEY` in `.env` → any OpenAI-compatible model (`ANSWER_MODEL`)
+4. nothing set → no LLM call: the 5 starter questions show the answer cached at build time; any other
+   question gets an extractive answer (most relevant retrieved sentences with citations, plus the graph facts used)
+
+If a configured key fails (invalid, no billing, offline), the app falls back to option 4 automatically.
+The same logic lives in `hybridrag/answer.py` (`answer_backend`) and in the app's "How this demo runs" panel.
+
 ### Rebuild from scratch
 
 ```bash

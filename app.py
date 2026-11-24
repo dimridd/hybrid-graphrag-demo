@@ -14,7 +14,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from hybridrag.answer import answer_backend, extractive_answer, stream_llm_answer
+from hybridrag.answer import MODE_GUIDE, answer_backend, extractive_answer, stream_llm_answer
 from hybridrag.config import BUILD, DEFAULT_K, EXAMPLES, ONTOLOGY_DIR, ROOT, USERS, allowed_spaces
 from hybridrag.evaluate import load_golden
 from hybridrag.extract import validate
@@ -139,6 +139,10 @@ with st.sidebar:
 st.title("🕸️ Hybrid GraphRAG — Enterprise Search Demo")
 st.caption("Ontology-governed knowledge graph + BM25 + vector search, fused with Reciprocal Rank Fusion. "
            "Graph retrieval uses Personalized PageRank (HippoRAG). Corpus: 21 fictional Confluence pages in 6 spaces.")
+
+with st.expander("ℹ️ How this demo runs — with or without an API key", expanded=False):
+    st.markdown(MODE_GUIDE)
+    st.markdown(f"**Current answer mode:** {backend['label'] if backend else 'no LLM — cached starter answers + extractive answers'}")
 
 tab_ask, tab_graph, tab_onto, tab_eval, tab_arch = st.tabs(
     ["🔎 Ask", "🕸 Knowledge graph", "🧬 Ontology training", "📊 Evaluation", "🏗 Architecture"])

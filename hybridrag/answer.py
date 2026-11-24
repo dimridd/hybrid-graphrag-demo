@@ -1,8 +1,18 @@
-"""Answer generation.
+"""Answer generation - and how the demo behaves with or without an API key.
 
-* With an OpenAI key: gpt-4o-mini writes a grounded answer that cites [C1], [C2] ... (streamed).
-* Without a key: an extractive answer - the most question-relevant sentences from the top chunks,
-  each with its citation. A grounding check returns NOT FOUND when nothing relevant is retrieved.
+The retrieval pipeline never needs a key: chunking, the knowledge graph, the trained ontology and the
+evaluation are precomputed by build.py (data/build/), and every query runs BM25 + ChromaDB + Personalized
+PageRank + RRF + permission filtering locally. Only the final wording of the answer can use an LLM.
+
+Answer backend, chosen by answer_backend() in this order:
+  1. key typed in the sidebar            -> gpt-4o-mini, streamed, cites [C1], [C2] ...
+  2. OPENAI_API_KEY in .env              -> gpt-4o-mini
+  3. LLM_BASE_URL + LLM_API_KEY in .env  -> any OpenAI-compatible endpoint (ANSWER_MODEL)
+  4. nothing set (.env empty / missing)  -> no LLM call at all:
+       * the 5 starter questions, default settings -> answer cached at build time (data/build/example_answers.json)
+       * any other question / setting               -> extractive answer: the most question-relevant
+         sentences from the retrieved chunks with citations, plus the graph facts used
+If a configured LLM call fails (bad key, no billing, network), the app falls back to step 4 automatically.
 """
 from __future__ import annotations
 
@@ -20,6 +30,24 @@ NOT FOUND in the documents you can access. Be concise: 2-6 sentences or a short 
 def build_prompt(question: str, contexts: list[tuple[str, str]]) -> str:
     blocks = "\n\n".join(f"[C{i + 1}] {text}" for i, (_, text) in enumerate(contexts))
     return f"CONTEXT:\n{blocks}\n\nQUESTION: {question}"
+
+
+MODE_GUIDE = """
+**Search never needs a key.** BM25, ChromaDB vector search, entity linking, Personalized PageRank over the
+knowledge graph, Reciprocal Rank Fusion and permission filtering all run locally on every question. The graph,
+trained ontology and evaluation were precomputed by `build.py` (31 cached LLM calls in `data/build/llm_cache/`).
+
+**Only the answer wording can use an LLM**, chosen in this order:
+1. a key typed in the sidebar → gpt-4o-mini, streamed with citations
+2. `OPENAI_API_KEY` in `.env` → gpt-4o-mini
+3. `LLM_BASE_URL` + `LLM_API_KEY` in `.env` → any OpenAI-compatible model
+4. **nothing set** → no LLM call:
+   - the 5 starter questions (default settings) show the answer generated and cached at build time
+   - any other question shows an **extractive answer**: the most relevant retrieved sentences with [C#] citations,
+     plus the graph facts used
+
+If a configured key fails (invalid, no billing, offline), the app falls back to option 4 automatically.
+"""
 
 
 def answer_backend(sidebar_key: str = ""):
