@@ -11,14 +11,13 @@ mass on its passage node, so multi-hop evidence is reached through shared entiti
 
 Permission-aware: a node or edge is visible only if the user can open at least one of its source chunks.
 """
-from __future__ import annotations
 
-import math
+# python imports
 from functools import lru_cache
-
+import scipy.sparse as sp
 import networkx as nx
 import numpy as np
-import scipy.sparse as sp
+import math
 
 
 PASSAGE = "Passage"

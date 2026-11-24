@@ -3,25 +3,25 @@
 Run:  streamlit run app.py
 Everything is precomputed by build.py; search runs live (BM25 + ChromaDB + Personalized PageRank + RRF).
 """
-from __future__ import annotations
 
-import json
-import re
-import time
-
-import networkx as nx
-import pandas as pd
+# python imports
 import plotly.graph_objects as go
 import streamlit as st
+import networkx as nx
+import pandas as pd
+import json
+import time
+import re
 
-from hybridrag.answer import MODE_GUIDE, answer_backend, extractive_answer, stream_llm_answer
+# local imports
 from hybridrag.config import BUILD, DEFAULT_K, EXAMPLES, ONTOLOGY_DIR, ROOT, USERS, allowed_spaces
+from hybridrag.answer import MODE_GUIDE, answer_backend, extractive_answer, stream_llm_answer
+from hybridrag.retrieve import HybridRetriever, refine_context
+from hybridrag.ontology import STRUCTURAL, Ontology
 from hybridrag.evaluate import load_golden
-from hybridrag.extract import validate
 from hybridrag.graph import KnowledgeGraph
 from hybridrag.ingest import load_corpus
-from hybridrag.ontology import STRUCTURAL, Ontology
-from hybridrag.retrieve import HybridRetriever, refine_context
+from hybridrag.extract import validate
 
 st.set_page_config(page_title="Hybrid GraphRAG — Enterprise Search Demo", page_icon="🕸️", layout="wide")
 

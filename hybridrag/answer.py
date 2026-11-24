@@ -14,11 +14,12 @@ Answer backend, chosen by answer_backend() in this order:
          sentences from the retrieved chunks with citations, plus the graph facts used
 If a configured LLM call fails (bad key, no billing, network), the app falls back to step 4 automatically.
 """
-from __future__ import annotations
 
+# python imports
 import os
 import re
 
+# local imports
 from .config import ANSWER_MODEL
 from .retrieve import tokenize
 

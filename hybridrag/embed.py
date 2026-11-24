@@ -1,11 +1,11 @@
 """Local ONNX MiniLM embeddings (Chroma's default model) with a small persistent cache."""
-from __future__ import annotations
 
+# python imports
+import numpy as np
 import hashlib
 import json
 
-import numpy as np
-
+# local imports
 from .config import BUILD
 
 _ef = None

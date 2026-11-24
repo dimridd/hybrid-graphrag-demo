@@ -1,14 +1,16 @@
 """Fast checks that run without any API key (everything replays from the committed cache)."""
-import json
 
+# python imports
 import networkx as nx
 import numpy as np
+import json
 
+# local imports
 from hybridrag.config import BUILD, ONTOLOGY_DIR
-from hybridrag.extract import validate
 from hybridrag.graph import KnowledgeGraph
 from hybridrag.ingest import load_corpus
 from hybridrag.ontology import Ontology
+from hybridrag.extract import validate
 
 
 def _kg():

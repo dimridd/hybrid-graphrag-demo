@@ -5,14 +5,13 @@ Three layers (see README):
   * shared core types                                   (Person, Team, Service, ...)
   * learned types/links added by the ontology training loop (versioned, gated)
 """
-from __future__ import annotations
 
-import copy
-import re
+# python imports
 from dataclasses import dataclass, field
 from pathlib import Path
-
+import copy
 import yaml
+import re
 
 STRUCTURAL = {"Space", "Document", "Label", "JiraIssue"}
 JIRA_KEY = re.compile(r"\b([A-Z][A-Z0-9]{1,9}-\d{1,6})\b")

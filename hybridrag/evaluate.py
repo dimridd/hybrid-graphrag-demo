@@ -1,14 +1,14 @@
 """Golden-set evaluation: a chunk is relevant to an evidence quote if it contains the quote
 (case, markdown and whitespace ignored). Metrics are computed per evidence item, so a multi-hop
 question only gets full recall when every hop's evidence is retrieved."""
-from __future__ import annotations
 
-import math
-import re
+# python imports
 from collections import defaultdict
-
+import math
 import yaml
+import re
 
+# local imports
 from .config import GOLDEN
 
 

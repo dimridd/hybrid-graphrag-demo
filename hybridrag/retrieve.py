@@ -7,21 +7,21 @@
   5. Fusion                Reciprocal Rank Fusion of the three ranked lists
   6. Refine context        section expansion + token-budget trimmer that never cuts code blocks
 """
-from __future__ import annotations
 
-import re
-import time
+# python imports
 from dataclasses import dataclass, field
-
-import chromadb
-import numpy as np
 from rank_bm25 import BM25Okapi
+import numpy as np
+import chromadb
+import time
+import re
 
-from .embed import embed
-from .extract import entity_key
+# local imports
 from .graph import KnowledgeGraph
-from .ingest import Chunk
 from .ontology import STRUCTURAL
+from .extract import entity_key
+from .ingest import Chunk
+from .embed import embed
 
 TOKEN = re.compile(r"[a-z0-9]+(?:[-_.][a-z0-9]+)*")
 STOP = set("a an the of to in on for and or is are was were be by with what which who how when why does do did from at as it this that these those i we you me my our".split())

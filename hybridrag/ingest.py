@@ -4,15 +4,15 @@
 * Chunks follow headings; code blocks are never split; each chunk keeps its heading path (breadcrumb).
 * Near-duplicate chunks are dropped with MinHash-style shingle Jaccard.
 """
-from __future__ import annotations
 
-import hashlib
-import re
+# python imports
 from dataclasses import dataclass, field
 from pathlib import Path
-
+import hashlib
 import yaml
+import re
 
+# local imports
 from .config import CORPUS
 
 TARGET_WORDS = 45

@@ -5,23 +5,24 @@
 
 Writes data/build/*.json and data/ontologies/v*.yaml, which the Streamlit app reads.
 """
-from __future__ import annotations
 
-import json
-import sys
-import time
+# python imports
 from dataclasses import asdict
+import json
+import time
+import sys
 
-from hybridrag import embed as E
-from hybridrag import learning as L
-from hybridrag import llm
-from hybridrag.config import BUILD, ONTOLOGY_DIR
-from hybridrag.evaluate import evaluate, load_golden
+# local imports
 from hybridrag.extract import entity_key, extract_all, validate
+from hybridrag.evaluate import evaluate, load_golden
+from hybridrag.config import BUILD, ONTOLOGY_DIR
+from hybridrag.retrieve import HybridRetriever
 from hybridrag.graph import KnowledgeGraph
 from hybridrag.ingest import load_corpus
 from hybridrag.ontology import Ontology
-from hybridrag.retrieve import HybridRetriever
+from hybridrag import learning as L
+from hybridrag import embed as E
+from hybridrag import llm
 
 
 def log(*a):

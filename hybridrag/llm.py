@@ -3,12 +3,13 @@
 Every call is cached by (model, prompt). The cache is committed to the repo, so the whole build
 (extraction + ontology training) replays offline without an API key and gives identical results.
 """
-from __future__ import annotations
 
+# python imports
 import hashlib
 import json
 import os
 
+# local imports
 from .config import LLM_CACHE
 
 _client = None

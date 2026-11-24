@@ -1,6 +1,8 @@
 """Paths, permission model and demo users."""
-import os
+
+# python imports
 from pathlib import Path
+import os
 
 ROOT = Path(__file__).resolve().parent.parent
 

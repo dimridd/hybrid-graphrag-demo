@@ -6,15 +6,16 @@ Tier 1 (LLM):    entities and relationships, guided by the current ontology. The
                  evidence for the ontology training loop (rejection log).
 Raw LLM output is cached per (chunk text, prompt) - re-validating under a new ontology costs no LLM calls.
 """
-from __future__ import annotations
 
-from collections import defaultdict
+# python imports
 from concurrent.futures import ThreadPoolExecutor
+from collections import defaultdict
 
-from . import llm
+# local imports
+from .ontology import JIRA_KEY, Ontology, norm_label, to_pascal, to_upper_snake
 from .config import EXTRACT_BATCH, EXTRACT_MODEL
 from .ingest import Chunk
-from .ontology import JIRA_KEY, Ontology, norm_label, to_pascal, to_upper_snake
+from . import llm
 
 SYSTEM = """You extract a knowledge graph from enterprise documentation for search.
 Extract EVERY named thing a user could search for: systems, components, teams, people, data stores,

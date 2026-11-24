@@ -14,24 +14,24 @@
 
 All LLM calls are cached, so the full loop replays offline.
 """
-from __future__ import annotations
 
-import math
-import re
+# python imports
 from collections import Counter, defaultdict
-
+from sklearn.cluster import KMeans
 import networkx as nx
 import numpy as np
-from sklearn.cluster import KMeans
+import math
+import re
 
-from . import llm
-from .config import AUDIT_MODEL, EXTRACT_MODEL
-from .embed import embed
-from .evaluate import score
-from .extract import entity_key, extract_all, validate
-from .graph import KnowledgeGraph
+# local imports
 from .ontology import STRUCTURAL, Ontology, norm_label, to_pascal, to_upper_snake
+from .extract import entity_key, extract_all, validate
+from .config import AUDIT_MODEL, EXTRACT_MODEL
 from .retrieve import HybridRetriever
+from .graph import KnowledgeGraph
+from .evaluate import score
+from .embed import embed
+from . import llm
 
 MIN_CLUSTER_SUPPORT = 2       # production setting; the gate below scales it to the corpus
 MIN_CHUNK_SUPPORT = 3
